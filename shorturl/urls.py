@@ -4,5 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', views.main_page, name="main mage"),
+    path('counter/', views.ger_url_call_counter),
     url(r'^\w{7}/', views.forvarding)
+
 ]

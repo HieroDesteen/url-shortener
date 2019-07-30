@@ -4,5 +4,6 @@ from django.db import models
 class Url_match(models.Model):
     long_url = models.TextField()
     short_url=models.TextField()
+    call_counter=models.IntegerField(default=0)
     def __str__(self):
         return self.long_url

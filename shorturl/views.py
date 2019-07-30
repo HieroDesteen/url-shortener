@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from shorturl.models import Url_match
 import random, string
 from .url_validator import is_valid_url as vu
@@ -23,5 +23,18 @@ def main_page(request):
 
 def forvarding(request):
     short_url = ''.join(HttpRequest.get_full_path(request)[1:-1])
-    long_url = str(Url_match.objects.filter(short_url=short_url)[0])
+    b = Url_match.objects.get(short_url=short_url)
+    a = Url_match.objects.filter(short_url=short_url)
+    b.call_counter = b.call_counter + 1
+    b.save()
+    long_url = str(a[0])
     return HttpResponseRedirect(long_url)
+
+
+def ger_url_call_counter(request):
+    if request.GET.getlist('url'):
+        url = str(request.GET.getlist('url')[0])
+        a = Url_match.objects.get(short_url=url)
+        data = {'number': a.call_counter}
+        return render(request, "counter/index.html", data)
+    return render(request, "counter/index.html")
