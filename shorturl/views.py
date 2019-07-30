@@ -13,8 +13,6 @@ def main_page(request):
         a.save()
         data={'short_url': 'http://127.0.0.1:8000/' + short_url}
         return render(request, "page1/index.html", context=data)
-        # return HttpResponse('http://127.0.0.1:8000/' + short_url)
-
     return render(request, "page1/index.html")
 def forvarding(request):
     short_url=''.join(HttpRequest.get_full_path(request)[1:-1])
