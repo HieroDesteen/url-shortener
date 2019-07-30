@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
 from shorturl.models import Url_match
 import random, string
-from .url_validator import is_valid_url as vu
+from .url_validator import is_valid_url as vu, is_valid_short_url as vsu
 
 
 # Create your views here.
@@ -10,7 +10,7 @@ def main_page(request):
     if request.GET.getlist('long_url'):
         long_url = str(request.GET.getlist('long_url')[0])
         if vu(long_url):
-            short_url = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
+            short_url = vsu()
             a = Url_match(long_url=long_url, short_url=short_url)
             a.save()
             data = {'short_url': 'http://127.0.0.1:8000/' + short_url}
