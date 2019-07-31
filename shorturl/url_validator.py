@@ -1,20 +1,16 @@
 import re, random, string
 from django.core.exceptions import ObjectDoesNotExist
 from shorturl.models import Url_match
+from django.core.validators import URLValidator
+from django.core.validators import ValidationError
 
 
 def is_valid_url(url):
-    regex = re.compile(
-        r'^https?://'  # http:// or https://
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'  # domain...
-        r'localhost|'  # localhost...
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-        r'(?::\d+)?'  # optional port
-        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
-
-    if regex.match(url) != None:
+    validate = URLValidator()
+    try:
+        validate(url)
         return True
-    else:
+    except ValidationError:
         return False
 
 
