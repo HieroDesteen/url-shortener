@@ -1,11 +1,8 @@
-from django.urls import path
-from django.conf.urls import url
+from django.urls import path, re_path
 from . import views
 
-app_name='shorturl'
 urlpatterns = [
     path('', views.index, name="main mage"),
-    path('counter/', views.ger_url_call_counter),
-    url(r'^\w{7}/', views.forvarding)
-
+    path('counter/', views.get_url_call_counter),
+    re_path(r'^(?P<short_url>\w{7})/', views.forvarding)
 ]

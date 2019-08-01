@@ -1,14 +1,15 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from shorturl.models import Url_match
-import random, string
-from .url_validator import is_valid_url as vu, is_valid_short_url as vsu
+from .url_validator import is_valid_url as vu, make_valid_short_url as vsu
+from django.shortcuts import get_object_or_404
+from django.http import Http404
 
 
 # Create your views here.
 def index(request):
-    if request.GET.getlist('long_url'):
-        long_url = str(request.GET.getlist('long_url')[0])
+    if request.GET.__contains__('long_url'):
+        long_url = request.GET.get('long_url')
         if vu(long_url):
             short_url = vsu()
             a = Url_match(long_url=long_url, short_url=short_url)
@@ -21,18 +22,21 @@ def index(request):
     return render(request, "page1/index.html")
 
 
-def forvarding(request):
-    b = Url_match.objects.get(short_url=HttpRequest.get_full_path(request)[1:-1])
+def forvarding(request, short_url):
+    b = get_object_or_404(Url_match, short_url=short_url)
     b.call_counter = b.call_counter + 1
     long_url = b.long_url
     b.save()
     return HttpResponseRedirect(long_url)
 
 
-def ger_url_call_counter(request):
-    if request.GET.getlist('url'):
-        url = str(request.GET.getlist('url')[0])
-        a = Url_match.objects.get(short_url=url)
-        data = {'number': a.call_counter}
+def get_url_call_counter(request):
+    if request.GET.__contains__('url'):
+        url = request.GET.get('url')
+        try:
+            a = get_object_or_404(Url_match, short_url=url)
+            data = {'number': a.call_counter}
+        except Http404:
+            data = {'number': 'Url not found'}
         return render(request, "counter/index.html", data)
     return render(request, "counter/index.html")
