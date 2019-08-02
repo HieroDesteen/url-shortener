@@ -8,7 +8,7 @@ from django.http import Http404
 
 # Create your views here.
 def index(request):
-    if request.GET.__contains__('long_url'):
+    if 'long_url' in request.GET:
         long_url = request.GET.get('long_url')
         if vu(long_url):
             short_url = vsu()
@@ -31,7 +31,7 @@ def forvarding(request, short_url):
 
 
 def get_url_call_counter(request):
-    if request.GET.__contains__('url'):
+    if 'url' in request.GET:
         url = request.GET.get('url')
         try:
             a = get_object_or_404(Url_match, short_url=url)
